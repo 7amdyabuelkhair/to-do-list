@@ -1,25 +1,28 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" class="dark">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مهامي - Shared Realtime To-Do List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>قائمة مهامي الوردي 🌸</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#f0f7ff',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                        },
-                        supabase: '#3ecf8e'
+                        girly: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            300: '#fda4af',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            purple: '#f3e8ff',
+                            pastel: '#fff5f7',
+                        }
                     },
                     fontFamily: {
                         tajawal: ['Tajawal', 'sans-serif'],
@@ -32,7 +35,7 @@
     <!-- Google Arabic Font: Tajawal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -43,302 +46,363 @@
     <style>
         * {
             font-family: 'Tajawal', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* Custom Scrollbar */
+        body {
+            background: linear-gradient(135deg, #fff0f5 0%, #fae10010 50%, #f3e8ff 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* Glassmorphism Girly Style */
+        .glass-girly {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 182, 193, 0.4);
+            box-shadow: 0 10px 30px -10px rgba(244, 63, 94, 0.12);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(251, 113, 133, 0.2);
+            box-shadow: 0 8px 20px -6px rgba(225, 29, 72, 0.08);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .glass-card:active {
+            transform: scale(0.98);
+        }
+
+        /* Custom Soft Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #090d16;
+            background: #ffe4e6;
         }
         ::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #334155;
+            background: #fda4af;
+            border-radius: 10px;
         }
 
-        /* Glassmorphism Styles */
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        
-        .glass-card {
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .glass-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(59, 130, 246, 0.35);
-            box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.4);
-        }
-
-        .task-completed-title {
+        .completed-strike {
             text-decoration: line-through;
-            color: #64748b !important;
+            color: #94a3b8 !important;
         }
 
-        @keyframes pulse-subtle {
+        @keyframes pulse-pink {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.85; transform: scale(1.02); }
+            50% { opacity: 0.88; transform: scale(1.02); }
         }
-        .urgent-pulse {
-            animation: pulse-subtle 2s infinite ease-in-out;
+        .pulse-active {
+            animation: pulse-pink 2.2s infinite ease-in-out;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.96); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes float-soft {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
         }
-        .animate-pop {
-            animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .float-badge {
+            animation: float-soft 3s infinite ease-in-out;
+        }
+
+        /* Floating action button shadow */
+        .fab-shadow {
+            box-shadow: 0 12px 28px -6px rgba(244, 63, 94, 0.45);
         }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white pb-12">
+<body class="text-slate-800 pb-28 selection:bg-rose-200 selection:text-rose-900">
 
-    <!-- Header Navigation Bar -->
-    <header class="sticky top-0 z-30 glass-panel border-b border-slate-800/80 mb-6">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-30 glass-girly border-b border-rose-200/50 mb-4 px-4 py-3">
+        <div class="max-w-md mx-auto flex items-center justify-between gap-2">
             
-            <!-- Logo & Supabase Status Indicator -->
-            <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-blue-600 flex items-center justify-center shadow-lg shadow-emerald-600/20 text-white text-xl">
-                    <i class="fa-solid fa-bolt"></i>
+            <!-- Logo & Cute Header Title -->
+            <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-400 via-rose-400 to-purple-400 flex items-center justify-center text-white text-lg shadow-md shadow-rose-300">
+                    🌸
                 </div>
                 <div>
-                    <div class="flex items-center gap-2">
-                        <h1 class="text-lg sm:text-xl font-bold tracking-wide text-white">مهامي التفاعلية</h1>
-                        <span id="connection-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                            غير متصل
-                        </span>
+                    <h1 class="text-base font-extrabold text-rose-900 tracking-tight flex items-center gap-1">
+                        مهامي الجذابة ✨
+                    </h1>
+                    <div id="connection-status-pill" class="flex items-center gap-1 text-[11px] text-rose-500 font-medium">
+                        <span id="status-dot" class="w-2 h-2 rounded-full bg-amber-400"></span>
+                        <span id="status-text">تخزين محلي 📱</span>
                     </div>
-                    <p class="text-xs text-slate-400 hidden sm:block">تزامن حي ومباشر فورياً عبر Supabase</p>
                 </div>
             </div>
 
-            <!-- Top Header Actions -->
-            <div class="flex items-center gap-2 sm:gap-3">
-                <button onclick="openSqlModal()" title="دليل إعداد قاعدة البيانات" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-3 py-2 rounded-xl text-xs font-medium transition-colors">
-                    <i class="fa-solid fa-database text-emerald-400"></i>
-                    <span class="hidden md:inline">إعداد SQL</span>
+            <!-- Supabase Setup Action Buttons (Hides AUTOMATICALLY after connection) -->
+            <div id="supabase-controls-header" class="flex items-center gap-1.5">
+                <button onclick="openSqlModal()" title="كود SQL" class="px-2.5 py-1.5 rounded-xl bg-purple-100 hover:bg-purple-200 text-purple-700 text-xs font-bold border border-purple-200 transition-all flex items-center gap-1">
+                    <i class="fa-solid fa-code text-[11px]"></i>
+                    <span>SQL</span>
                 </button>
-
-                <button onclick="openConfigModal()" title="إعدادات الاتصال" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-3 py-2 rounded-xl text-xs font-medium transition-colors">
-                    <i class="fa-solid fa-plug text-blue-400"></i>
-                    <span class="hidden md:inline">ربط Supabase</span>
-                </button>
-
-                <button onclick="openTaskModal()" class="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg shadow-emerald-600/20 transition-all active:scale-95">
-                    <i class="fa-solid fa-plus"></i>
-                    <span>مهمة جديدة</span>
+                <button onclick="openConfigModal()" title="ربط سوبا بيز" class="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-pink-400 to-rose-400 text-white text-xs font-bold shadow-sm hover:opacity-95 transition-all flex items-center gap-1">
+                    <i class="fa-solid fa-plug text-[11px]"></i>
+                    <span>ربط</span>
                 </button>
             </div>
+
+            <!-- Settings gear icon (shows only when connected) -->
+            <button id="settings-gear-btn" onclick="openConfigModal()" title="إعدادات الربط" class="hidden w-9 h-9 rounded-xl bg-rose-100/80 text-rose-600 hover:bg-rose-200 flex items-center justify-center text-sm transition-colors">
+                <i class="fa-solid fa-gear"></i>
+            </button>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1 w-full">
+    <main class="max-w-md mx-auto px-4 space-y-4">
 
-        <!-- Banner for Unconfigured Supabase state -->
-        <div id="unconfigured-banner" class="hidden mb-6 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-200 flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div class="flex items-start sm:items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 text-lg">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                </div>
+        <!-- Banner for Unconfigured Supabase (Hides automatically upon connection) -->
+        <div id="unconfigured-banner" class="p-3.5 rounded-2xl bg-gradient-to-r from-pink-100 via-purple-50 to-rose-100 border border-pink-200/80 flex items-center justify-between gap-3 shadow-sm">
+            <div class="flex items-center gap-2.5">
+                <span class="text-xl">💖</span>
                 <div>
-                    <h3 class="text-sm font-bold text-amber-300">لم يتم ربط مشروع Supabase بعد</h3>
-                    <p class="text-xs text-amber-400/80 mt-0.5">قم بإدخال رابط المشروع والـ Anon Key لتفعيل التزامن الفوري والمشاركة اللحظية مع جميع المستخدمين.</p>
+                    <h3 class="text-xs font-bold text-rose-900">تريدين مزامنة مهامك فورياً؟</h3>
+                    <p class="text-[11px] text-rose-700/80">ربط Supabase يتيح ظهور التغييرات فوراً للجميع</p>
                 </div>
             </div>
-            <div class="flex items-center gap-2 self-end sm:self-auto">
-                <button onclick="openSqlModal()" class="px-3 py-1.5 rounded-xl bg-slate-900 text-amber-300 hover:text-white border border-amber-500/30 text-xs font-medium">كود SQL</button>
-                <button onclick="openConfigModal()" class="px-3 py-1.5 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs hover:bg-amber-400 shadow-md transition-colors">ربط الآن</button>
-            </div>
+            <button onclick="openConfigModal()" class="px-3 py-1.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs shadow-md shadow-rose-300 transition-all shrink-0">
+                ربط سوبا بيز
+            </button>
         </div>
 
-        <!-- Dashboard Statistics Section -->
-        <section class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8">
-            <div class="glass-panel p-4 rounded-2xl border border-slate-800 flex items-center gap-3.5">
-                <div class="w-11 h-11 rounded-xl bg-slate-800/80 text-blue-400 flex items-center justify-center text-xl shrink-0">
-                    <i class="fa-solid fa-list-ul"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-slate-400 font-medium">إجمالي المهام</p>
-                    <p id="stat-total" class="text-xl font-extrabold text-white">0</p>
-                </div>
+        <!-- Quick Stats Cards -->
+        <section class="grid grid-cols-4 gap-2">
+            <div class="glass-card p-2.5 rounded-2xl text-center border-rose-200/60">
+                <span class="text-sm">🌸</span>
+                <p id="stat-total" class="text-base font-extrabold text-rose-900 mt-0.5">0</p>
+                <p class="text-[10px] font-bold text-slate-500">الكل</p>
             </div>
-            
-            <div class="glass-panel p-4 rounded-2xl border border-slate-800 flex items-center gap-3.5">
-                <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl shrink-0">
-                    <i class="fa-solid fa-hourglass-half"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-slate-400 font-medium">قيد الانتظار</p>
-                    <p id="stat-pending" class="text-xl font-extrabold text-amber-400">0</p>
-                </div>
+            <div class="glass-card p-2.5 rounded-2xl text-center border-pink-200/60 bg-pink-50/50">
+                <span class="text-sm">⚡</span>
+                <p id="stat-running" class="text-base font-extrabold text-pink-600 mt-0.5">0</p>
+                <p class="text-[10px] font-bold text-pink-600">الآن</p>
             </div>
-
-            <div class="glass-panel p-4 rounded-2xl border border-slate-800 flex items-center gap-3.5">
-                <div class="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl shrink-0">
-                    <i class="fa-solid fa-circle-check"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-slate-400 font-medium">المكتملة</p>
-                    <p id="stat-completed" class="text-xl font-extrabold text-emerald-400">0</p>
-                </div>
+            <div class="glass-card p-2.5 rounded-2xl text-center border-purple-200/60">
+                <span class="text-sm">⏰</span>
+                <p id="stat-upcoming" class="text-base font-extrabold text-purple-600 mt-0.5">0</p>
+                <p class="text-[10px] font-bold text-purple-600">قادمة</p>
             </div>
-
-            <div class="glass-panel p-4 rounded-2xl border border-slate-800 flex items-center gap-3.5">
-                <div class="w-11 h-11 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center text-xl shrink-0">
-                    <i class="fa-solid fa-clock-rotate-left"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-slate-400 font-medium">متأخرة</p>
-                    <p id="stat-overdue" class="text-xl font-extrabold text-rose-400">0</p>
-                </div>
+            <div class="glass-card p-2.5 rounded-2xl text-center border-emerald-200/60">
+                <span class="text-sm">✨</span>
+                <p id="stat-completed" class="text-base font-extrabold text-emerald-600 mt-0.5">0</p>
+                <p class="text-[10px] font-bold text-emerald-600">تمت</p>
             </div>
         </section>
 
-        <!-- Controls & Filtering Bar -->
-        <section class="glass-panel p-4 rounded-2xl mb-6 space-y-4">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                
-                <!-- Filter Tabs -->
-                <div class="flex items-center gap-1.5 overflow-x-auto pb-2 md:pb-0 scrollbar-none border-b md:border-b-0 border-slate-800">
-                    <button onclick="setTab('all')" id="tab-all" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all bg-emerald-600 text-white shadow-md shadow-emerald-600/20 whitespace-nowrap">
-                        الكل (<span id="count-all">0</span>)
-                    </button>
-                    <button onclick="setTab('today')" id="tab-today" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 whitespace-nowrap">
-                        اليوم (<span id="count-today">0</span>)
-                    </button>
-                    <button onclick="setTab('pending')" id="tab-pending" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 whitespace-nowrap">
-                        قيد الانتظار (<span id="count-pending">0</span>)
-                    </button>
-                    <button onclick="setTab('completed')" id="tab-completed" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 whitespace-nowrap">
-                        المكتملة (<span id="count-completed">0</span>)
-                    </button>
+        <!-- Filtering & Search Bar -->
+        <section class="glass-girly p-3 rounded-2xl space-y-2.5">
+            <!-- Filter Tabs -->
+            <div class="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none">
+                <button onclick="setTab('all')" id="tab-all" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-rose-500 text-white shadow-sm shadow-rose-300 whitespace-nowrap">
+                    الكل 🌸 (<span id="count-all">0</span>)
+                </button>
+                <button onclick="setTab('running')" id="tab-running" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-slate-600 hover:bg-rose-100/50 whitespace-nowrap">
+                    جاري الآن ⚡ (<span id="count-running">0</span>)
+                </button>
+                <button onclick="setTab('upcoming')" id="tab-upcoming" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-slate-600 hover:bg-rose-100/50 whitespace-nowrap">
+                    قادمة ⏰ (<span id="count-upcoming">0</span>)
+                </button>
+                <button onclick="setTab('completed')" id="tab-completed" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-slate-600 hover:bg-rose-100/50 whitespace-nowrap">
+                    مكتملة ✨ (<span id="count-completed">0</span>)
+                </button>
+            </div>
+
+            <!-- Search and Category Row -->
+            <div class="flex items-center gap-2">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-heart absolute right-3 top-1/2 -translate-y-1/2 text-rose-300 text-xs"></i>
+                    <input type="text" id="search-input" oninput="handleSearch()" placeholder="ابحثي عن مهمة لطيفة..." class="w-full bg-white/90 text-xs text-rose-900 pr-8 pl-3 py-2 rounded-xl border border-rose-200 focus:outline-none focus:border-rose-400 transition-colors placeholder:text-rose-300">
                 </div>
 
-                <!-- Search and Categories -->
-                <div class="flex items-center gap-2.5 w-full md:w-auto">
-                    <!-- Search Input -->
-                    <div class="relative flex-1 md:w-64">
-                        <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
-                        <input type="text" id="search-input" oninput="handleSearch()" placeholder="بحث في المهام..." class="w-full bg-slate-900/90 text-xs sm:text-sm text-slate-200 pr-9 pl-3 py-2 rounded-xl border border-slate-800 focus:outline-none focus:border-emerald-500 transition-colors placeholder:text-slate-500">
-                    </div>
-
-                    <!-- Category Selector -->
-                    <select id="category-filter" onchange="handleCategoryFilter()" class="bg-slate-900/90 text-xs sm:text-sm text-slate-300 px-3 py-2 rounded-xl border border-slate-800 focus:outline-none focus:border-emerald-500 transition-colors">
-                        <option value="all">كل التصنيفات</option>
-                        <option value="عمل">💼 عمل</option>
-                        <option value="دراسة">📚 دراسة</option>
-                        <option value="شخصي">👤 شخصي</option>
-                        <option value="تسوق">🛒 تسوق</option>
-                        <option value="صحة">❤️ صحة</option>
-                        <option value="عام">📌 عام</option>
-                    </select>
-                </div>
+                <select id="category-filter" onchange="handleCategoryFilter()" class="bg-white/90 text-xs text-rose-900 px-2.5 py-2 rounded-xl border border-rose-200 focus:outline-none focus:border-rose-400 transition-colors font-bold">
+                    <option value="all">كل التصنيفات 💕</option>
+                    <option value="شخصي">🌸 شخصي</option>
+                    <option value="عناية">💅 عناية وجمال</option>
+                    <option value="دراسة">📚 دراسة</option>
+                    <option value="عمل">💼 عمل</option>
+                    <option value="تسوق">🛍️ تسوق</option>
+                    <option value="عام">📌 عام</option>
+                </select>
             </div>
         </section>
 
         <!-- Task Cards Display Area -->
-        <section id="tasks-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Dynamic task cards loaded via JS -->
+        <section id="tasks-container" class="space-y-3">
+            <!-- Task cards dynamic injection -->
         </section>
 
         <!-- Empty State Message -->
-        <div id="empty-state" class="hidden flex-col items-center justify-center py-16 px-4 text-center glass-panel rounded-3xl border border-slate-800">
-            <div class="w-20 h-20 bg-slate-900 rounded-full flex items-center justify-center text-slate-600 text-3xl mb-4 border border-slate-800">
-                <i class="fa-solid fa-clipboard-check"></i>
+        <div id="empty-state" class="hidden flex-col items-center justify-center py-12 px-4 text-center glass-card rounded-3xl">
+            <div class="w-16 h-16 bg-rose-100 text-rose-400 rounded-full flex items-center justify-center text-2xl mb-3 shadow-inner">
+                🎀
             </div>
-            <h3 class="text-base font-bold text-slate-200 mb-1">لا توجد مهام مطابقة</h3>
-            <p class="text-xs text-slate-400 max-w-sm mb-6">قم بإضافة مهمة جديدة أو تغيير خيارات البحث والتصفية.</p>
-            <button onclick="openTaskModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-emerald-600/20 transition-all">
-                <i class="fa-solid fa-plus ml-1.5"></i> إضافة مهمة
+            <h3 class="text-sm font-bold text-rose-900 mb-1">لا توجد مهام في هذه القائمة</h3>
+            <p class="text-xs text-rose-400 max-w-xs mb-4">اضغطي على الزر الزهري في الأسفل لإضافة مهمة جديدة ✨</p>
+            <button onclick="openTaskModal()" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-md shadow-rose-300 transition-all">
+                + إضافة مهمة الآن 💕
             </button>
         </div>
 
     </main>
 
+    <!-- Floating Mobile Add Button -->
+    <div class="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 w-full max-w-md px-4 pointer-events-none">
+        <button onclick="openTaskModal()" class="pointer-events-auto w-full bg-gradient-to-r from-pink-500 via-rose-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-3.5 px-6 rounded-2xl text-sm font-extrabold fab-shadow transition-all active:scale-95 flex items-center justify-center gap-2 border border-white/40">
+            <span class="text-lg">✨</span>
+            <span>إضافة مهمة جديدة</span>
+            <span class="text-lg">🌸</span>
+        </button>
+    </div>
 
-    <!-- Supabase Setup Modal -->
-    <div id="config-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-3xl p-6 shadow-2xl relative animate-pop">
+    <!-- Task Add / Edit Modal -->
+    <div id="task-modal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-rose-950/40 backdrop-blur-sm hidden">
+        <div class="bg-white/95 border border-pink-200 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             
-            <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-5">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg">
-                        <i class="fa-solid fa-plug"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold text-slate-100">ربط Supabase مشروعك</h3>
-                        <p class="text-xs text-slate-400">أدخل بيانات الربط للتزامن اللحظي المباشر</p>
-                    </div>
+            <div class="flex items-center justify-between pb-3 border-b border-rose-100 mb-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">🌸</span>
+                    <h3 id="modal-title" class="text-base font-extrabold text-rose-950">إضافة مهمة جديدة</h3>
                 </div>
-                <button onclick="closeConfigModal()" class="w-8 h-8 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 flex items-center justify-center transition-colors">
+                <button onclick="closeTaskModal()" class="w-8 h-8 text-rose-400 hover:text-rose-600 rounded-full hover:bg-rose-50 flex items-center justify-center transition-colors">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
-            <form onsubmit="saveSupabaseConfig(event)" class="space-y-4">
+            <form id="task-form" onsubmit="handleTaskSubmit(event)" class="space-y-3.5">
+                <input type="hidden" id="task-id">
+
+                <!-- Title Input -->
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Project URL (رابط المشروغ)</label>
-                    <input type="url" id="sb-url-input" required placeholder="https://your-project.supabase.co" class="w-full bg-slate-950/90 text-xs sm:text-sm text-slate-100 px-4 py-2.5 rounded-xl border border-slate-800 focus:outline-none focus:border-emerald-500 font-mono">
+                    <label class="block text-xs font-bold text-rose-900 mb-1">عنوان المهمة 💕 <span class="text-rose-500">*</span></label>
+                    <input type="text" id="input-title" required placeholder="مثال: القراءة اليومية والعناية بالبشرة..." class="w-full bg-rose-50/50 text-xs sm:text-sm text-slate-800 px-3.5 py-2.5 rounded-xl border border-rose-200 focus:outline-none focus:border-rose-400 transition-colors">
                 </div>
 
+                <!-- Optional Date Input -->
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Anon / Public API Key</label>
-                    <textarea id="sb-key-input" required rows="3" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." class="w-full bg-slate-950/90 text-xs text-slate-100 px-4 py-2.5 rounded-xl border border-slate-800 focus:outline-none focus:border-emerald-500 font-mono resize-none"></textarea>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-xs font-bold text-rose-900">التاريخ <span class="text-rose-400 font-normal text-[11px]">(اختياري 📅)</span></label>
+                        <button type="button" onclick="clearDateInput()" class="text-[10px] text-rose-500 hover:underline">مسح التاريخ</button>
+                    </div>
+                    <input type="date" id="input-date" class="w-full bg-rose-50/50 text-xs sm:text-sm text-slate-800 px-3.5 py-2 rounded-xl border border-rose-200 focus:outline-none focus:border-rose-400 transition-colors">
                 </div>
 
-                <div class="p-3 rounded-xl bg-slate-950/50 border border-slate-800/80 text-xs text-slate-400 space-y-1">
-                    <p class="font-semibold text-slate-300"><i class="fa-solid fa-circle-info text-blue-400 ml-1"></i> أين تجد هذه البيانات؟</p>
-                    <p>في لوحة تحكم Supabase الخاص بك: انتقل إلى <b>Project Settings</b> ⬅️ <b>API</b> وتنسخ الـ URL والـ anon key.</p>
+                <!-- Start and End Time Inputs -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-rose-900 mb-1">وقت البداية ⏰ <span class="text-rose-500">*</span></label>
+                        <input type="time" id="input-starttime" required class="w-full bg-rose-50/50 text-xs sm:text-sm text-slate-800 px-3 py-2 rounded-xl border border-rose-200 focus:outline-none focus:border-rose-400 transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-rose-900 mb-1">وقت النهاية ⌛ <span class="text-rose-500">*</span></label>
+                        <input type="time" id="input-endtime" required class="w-full bg-rose-50/50 text-xs sm:text-sm text-slate-800 px-3 py-2 rounded-xl border border-rose-200 focus:outline-none focus:border-rose-400 transition-colors">
+                    </div>
                 </div>
 
-                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
-                    <button type="button" onclick="closeConfigModal()" class="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-slate-200">إلغاء</button>
-                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-xl text-xs font-semibold shadow-lg shadow-emerald-600/20 transition-all">حفظ والاتصال</button>
+                <!-- Priority & Category -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-rose-900 mb-1">درجة الأهمية</label>
+                        <select id="input-priority" class="w-full bg-rose-50/50 text-xs text-slate-800 px-2.5 py-2 rounded-xl border border-rose-200 focus:outline-none focus:border-rose-400">
+                            <option value="low">✨ عادي</option>
+                            <option value="medium" selected>💖 هام</option>
+                            <option value="high">🔥 عاجل جداً</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-rose-900 mb-1">التصنيف</label>
+                        <select id="input-category" class="w-full bg-rose-50/50 text-xs text-slate-800 px-2.5 py-2 rounded-xl border border-rose-200 focus:outline-none focus:border-rose-400">
+                            <option value="شخصي" selected>🌸 شخصي</option>
+                            <option value="عناية">💅 عناية وجمال</option>
+                            <option value="دراسة">📚 دراسة</option>
+                            <option value="عمل">💼 عمل</option>
+                            <option value="تسوق">🛍️ تسوق</option>
+                            <option value="عام">📌 عام</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Notes Input -->
+                <div>
+                    <label class="block text-xs font-bold text-rose-900 mb-1">ملاحظات لطيفة 📝</label>
+                    <textarea id="input-notes" rows="2" placeholder="تفاصيل إضافية..." class="w-full bg-rose-50/50 text-xs text-slate-800 px-3 py-2 rounded-xl border border-rose-200 focus:outline-none focus:border-rose-400 resize-none"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-2 border-t border-rose-100">
+                    <button type="button" onclick="closeTaskModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-slate-600">إلغاء</button>
+                    <button type="submit" id="modal-submit-btn" class="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white px-5 py-2 rounded-xl text-xs font-extrabold shadow-md shadow-rose-200">حفظ المهمة ✨</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- SQL Setup Guide Modal -->
-    <div id="sql-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-xl rounded-3xl p-6 shadow-2xl relative animate-pop">
-            
-            <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-lg">
-                        <i class="fa-solid fa-terminal"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold text-slate-100">استعلام SQL الجاهز للإنشاء</h3>
-                        <p class="text-xs text-slate-400">انسخ الكود والصقه في SQL Editor في Supabase</p>
-                    </div>
+    <!-- Supabase Setup Modal -->
+    <div id="config-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-rose-950/40 backdrop-blur-sm hidden">
+        <div class="bg-white border border-rose-200 w-full max-w-md rounded-3xl p-5 shadow-2xl relative">
+            <div class="flex items-center justify-between pb-3 border-b border-rose-100 mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">🔌</span>
+                    <h3 class="text-sm font-extrabold text-rose-950">إعداد ربط Supabase</h3>
                 </div>
-                <button onclick="closeSqlModal()" class="w-8 h-8 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 flex items-center justify-center transition-colors">
+                <button onclick="closeConfigModal()" class="w-7 h-7 text-slate-400 hover:text-slate-600 rounded-full flex items-center justify-center">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
-            <div class="relative mb-4">
-                <pre class="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-xs font-mono text-emerald-400 overflow-x-auto leading-relaxed select-all" id="sql-code">
--- 1. إنشاء جدول المهام
+            <form onsubmit="saveSupabaseConfig(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Project URL (رابط المشروع)</label>
+                    <input type="url" id="sb-url-input" required placeholder="https://xxxx.supabase.co" class="w-full bg-slate-50 text-xs text-slate-800 px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 font-mono">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Anon API Key</label>
+                    <textarea id="sb-key-input" required rows="3" placeholder="eyJhbGciOiJIUzI1Ni..." class="w-full bg-slate-50 text-xs text-slate-800 px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-rose-400 font-mono resize-none"></textarea>
+                </div>
+
+                <div id="disconnect-container" class="hidden pt-1">
+                    <button type="button" onclick="disconnectSupabase()" class="w-full py-1.5 text-xs text-rose-600 hover:bg-rose-50 rounded-xl font-bold border border-rose-200">
+                        فصل الاتصال والعودة للتخزين المحلي 📱
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                    <button type="button" onclick="closeConfigModal()" class="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-400">إلغاء</button>
+                    <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white px-4 py-1.5 rounded-xl text-xs font-bold shadow-md shadow-rose-200">اختبار وحفظ الربط</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SQL Code Setup Modal -->
+    <div id="sql-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-rose-950/40 backdrop-blur-sm hidden">
+        <div class="bg-white border border-rose-200 w-full max-w-lg rounded-3xl p-5 shadow-2xl relative">
+            <div class="flex items-center justify-between pb-3 border-b border-rose-100 mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">⚡</span>
+                    <h3 class="text-sm font-extrabold text-rose-950">كود SQL لإنشاء الجدول في Supabase</h3>
+                </div>
+                <button onclick="closeSqlModal()" class="w-7 h-7 text-slate-400 hover:text-slate-600 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="relative mb-3">
+                <pre class="bg-slate-900 p-3.5 rounded-2xl text-[11px] font-mono text-pink-300 overflow-x-auto leading-relaxed select-all" id="sql-code">
+-- 1. إنشاء جدول المهام بتوقيت البداية والنهاية والتاريخ الاختياري
 create table if not exists todos (
   id uuid default gen_random_uuid() primary key,
   title text not null,
-  due_date timestamptz,
+  task_date date,
+  start_time text not null,
+  end_time text not null,
   priority text default 'medium',
   category text default 'عام',
   notes text,
@@ -346,194 +410,164 @@ create table if not exists todos (
   created_at timestamptz default now()
 );
 
--- 2. السماح بالقراءة والكتابة للجميع (Public Access)
+-- 2. السماح بالوصول العام
 alter table todos enable row level security;
 drop policy if exists "Public Access" on todos;
 create policy "Public Access" on todos for all using (true) with check (true);
 
--- 3. تفعيل المزامنة اللحظية (Realtime)
+-- 3. تفعيل المزامنة اللحظية
 alter publication supabase_realtime add table todos;</pre>
-                <button onclick="copySqlCode()" class="absolute top-3 left-3 bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-medium border border-slate-700 flex items-center gap-1.5 transition-colors">
-                    <i class="fa-regular fa-copy"></i>
-                    <span>نسخ SQL</span>
+                <button onclick="copySqlCode()" class="absolute top-2.5 left-2.5 bg-rose-500 hover:bg-rose-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold shadow transition-colors">
+                    نسخ SQL 📋
                 </button>
             </div>
 
-            <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                💡 <b class="text-slate-200">طريقة الاستخدام:</b> افتح مشروعك على Supabase 👈 ثم <b>SQL Editor</b> 👈 أنشئ <b>New Query</b> 👈 الصق الكود واضغط <b>Run</b>.
-            </p>
-
-            <div class="flex justify-end pt-2 border-t border-slate-800">
-                <button onclick="closeSqlModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-5 py-2 rounded-xl text-xs font-semibold">إغلاق</button>
+            <div class="flex justify-end pt-2 border-t border-slate-100">
+                <button onclick="closeSqlModal()" class="bg-slate-100 text-slate-700 px-4 py-1.5 rounded-xl text-xs font-bold">إغلاق</button>
             </div>
         </div>
     </div>
 
-    <!-- Task Add / Edit Modal -->
-    <div id="task-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-3xl p-6 shadow-2xl relative animate-pop">
-            
-            <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-5">
-                <div class="flex items-center gap-2.5">
-                    <div id="modal-icon-bg" class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-base">
-                        <i id="modal-icon" class="fa-solid fa-plus"></i>
-                    </div>
-                    <h3 id="modal-title" class="text-base font-bold text-slate-100">إضافة مهمة جديدة</h3>
-                </div>
-                <button onclick="closeTaskModal()" class="w-8 h-8 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 flex items-center justify-center transition-colors">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <form id="task-form" onsubmit="handleTaskSubmit(event)" class="space-y-4">
-                <input type="hidden" id="task-id">
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">عنوان المهمة <span class="text-rose-500">*</span></label>
-                    <input type="text" id="input-title" required placeholder="مثال: الاجتماع مع فريق التطوير..." class="w-full bg-slate-950/80 text-sm text-slate-100 px-4 py-2.5 rounded-xl border border-slate-800 focus:outline-none focus:border-emerald-500 transition-colors">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">التاريخ والوقت المخطط <span class="text-rose-500">*</span></label>
-                    <input type="datetime-local" id="input-datetime" required class="w-full bg-slate-950/80 text-sm text-slate-100 px-4 py-2.5 rounded-xl border border-slate-800 focus:outline-none focus:border-emerald-500 transition-colors [color-scheme:dark]">
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">درجة الأهمية</label>
-                        <select id="input-priority" class="w-full bg-slate-950/80 text-sm text-slate-100 px-3 py-2.5 rounded-xl border border-slate-800 focus:outline-none focus:border-emerald-500 transition-colors">
-                            <option value="low">🟢 عادي (منخفضة)</option>
-                            <option value="medium" selected>🟡 هام (متوسطة)</option>
-                            <option value="high">🔴 عاجل (عالية)</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">التصنيف</label>
-                        <select id="input-category" class="w-full bg-slate-950/80 text-sm text-slate-100 px-3 py-2.5 rounded-xl border border-slate-800 focus:outline-none focus:border-emerald-500 transition-colors">
-                            <option value="عمل">💼 عمل</option>
-                            <option value="دراسة">📚 دراسة</option>
-                            <option value="شخصي">👤 شخصي</option>
-                            <option value="تسوق">🛒 تسوق</option>
-                            <option value="صحة">❤️ صحة</option>
-                            <option value="عام" selected>📌 عام</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">ملاحظات إضافية</label>
-                    <textarea id="input-notes" rows="2" placeholder="أضف تفاصيل إضافية إن أردت..." class="w-full bg-slate-950/80 text-sm text-slate-100 px-4 py-2 rounded-xl border border-slate-800 focus:outline-none focus:border-emerald-500 transition-colors resize-none"></textarea>
-                </div>
-
-                <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
-                    <button type="button" onclick="closeTaskModal()" class="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-slate-200">إلغاء</button>
-                    <button type="submit" id="modal-submit-btn" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2 rounded-xl text-xs font-semibold shadow-lg shadow-emerald-600/20 transition-all">حفظ المهمة</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Confirmation Delete Modal -->
-    <div id="delete-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-6 shadow-2xl text-center animate-pop">
-            <div class="w-14 h-14 bg-rose-500/10 text-rose-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 border border-rose-500/20">
-                <i class="fa-solid fa-trash-can"></i>
-            </div>
-            <h4 class="text-base font-bold text-slate-100 mb-1">حذف المهمة نهائياً؟</h4>
-            <p class="text-xs text-slate-400 mb-6">سيتم حذف هذه المهمة وسيختفي التغيير لدى جميع المستخدمين فوراً.</p>
-            <div class="flex items-center justify-center gap-3">
-                <button onclick="closeDeleteModal()" class="w-1/2 py-2.5 rounded-xl text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 transition-colors">إلغاء</button>
-                <button id="confirm-delete-btn" class="w-1/2 py-2.5 rounded-xl text-xs font-semibold text-white bg-rose-600 hover:bg-rose-500 shadow-lg shadow-rose-600/25 transition-colors">حذف الآن</button>
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-rose-950/40 backdrop-blur-sm hidden">
+        <div class="bg-white border border-rose-200 w-full max-w-xs rounded-3xl p-5 shadow-2xl text-center">
+            <span class="text-3xl block mb-2">🗑️</span>
+            <h4 class="text-sm font-extrabold text-slate-800 mb-1">حذف المهمة؟</h4>
+            <p class="text-xs text-slate-500 mb-4">هل أنتِ متأكدة من حذف هذه المهمة لطيفك؟</p>
+            <div class="flex items-center justify-center gap-2">
+                <button onclick="closeDeleteModal()" class="w-1/2 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100">إلغاء</button>
+                <button id="confirm-delete-btn" class="w-1/2 py-2 rounded-xl text-xs font-bold text-white bg-rose-500 hover:bg-rose-600 shadow-md shadow-rose-200">حذف</button>
             </div>
         </div>
     </div>
 
     <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 bg-slate-800 text-slate-100 border border-slate-700 px-5 py-3 rounded-2xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none translate-y-4">
-        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
-        <span id="toast-message" class="text-xs sm:text-sm font-medium">تمت العملية بنجاح!</span>
+    <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-slate-900/90 text-white px-4 py-2.5 rounded-2xl shadow-xl transition-all duration-300 opacity-0 pointer-events-none translate-y-3 text-xs font-bold">
+        <span id="toast-icon">✨</span>
+        <span id="toast-message">تمت العملية بنجاح!</span>
     </div>
 
     <script>
-        // Storage keys
-        const SB_URL_KEY = 'taskflow_sb_url';
-        const SB_ANON_KEY = 'taskflow_sb_key';
+        // Storage Keys
+        const SB_URL_KEY = 'girly_todo_sb_url';
+        const SB_ANON_KEY = 'girly_todo_sb_key';
+        const LOCAL_TASKS_KEY = 'girly_todo_local_tasks';
 
-        // Task categories configuration
+        // Cute Category Metadata Configuration
         const CATEGORIES = {
-            'عمل': { icon: 'fa-briefcase', color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
-            'دراسة': { icon: 'fa-graduation-cap', color: 'bg-purple-500/10 text-purple-400 border-purple-500/20' },
-            'شخصي': { icon: 'fa-user', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
-            'تسوق': { icon: 'fa-cart-shopping', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20' },
-            'صحة': { icon: 'fa-heart-pulse', color: 'bg-rose-500/10 text-rose-400 border-rose-500/20' },
-            'عام': { icon: 'fa-thumbtack', color: 'bg-slate-500/10 text-slate-400 border-slate-500/20' }
+            'شخصي': { icon: '🌸', color: 'bg-pink-100 text-pink-700 border-pink-200' },
+            'عناية': { icon: '💅', color: 'bg-rose-100 text-rose-700 border-rose-200' },
+            'دراسة': { icon: '📚', color: 'bg-purple-100 text-purple-700 border-purple-200' },
+            'عمل': { icon: '💼', color: 'bg-blue-100 text-blue-700 border-blue-200' },
+            'تسوق': { icon: '🛍️', color: 'bg-amber-100 text-amber-700 border-amber-200' },
+            'عام': { icon: '📌', color: 'bg-slate-100 text-slate-700 border-slate-200' }
         };
 
         const PRIORITIES = {
-            low: { name: 'عادي', color: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' },
-            medium: { name: 'هام', color: 'bg-amber-500/15 text-amber-400 border-amber-500/30' },
-            high: { name: 'عاجل', color: 'bg-rose-500/20 text-rose-400 border-rose-500/40 urgent-pulse' }
+            low: { name: 'عادي ✨', color: 'bg-slate-100 text-slate-600 border-slate-200' },
+            medium: { name: 'هام 💖', color: 'bg-pink-100 text-pink-700 border-pink-200' },
+            high: { name: 'عاجل 🔥', color: 'bg-rose-100 text-rose-700 border-rose-300 pulse-active' }
         };
 
-        // State Management
+        // App State
         let supabaseClient = null;
         let realtimeChannel = null;
+        let isConnectedToSupabase = false;
         let tasks = [];
         let activeTab = 'all';
         let searchQuery = '';
         let categoryFilter = 'all';
         let taskToDeleteId = null;
 
+        // On DOM Load Init
         window.addEventListener('DOMContentLoaded', () => {
-            initSupabase();
-            setDefaultDateTime();
+            initApp();
+            setDefaultTimes();
 
-            // Periodic recalculation for overdue tasks badge
+            // Refresh statuses every 30 seconds
             setInterval(() => {
                 renderApp();
-            }, 60000);
+            }, 30000);
         });
 
-        // Initialize Supabase Client & Realtime Subscription
-        function initSupabase() {
+        // Initialize Supabase or fallback to LocalStorage
+        function initApp() {
             const url = localStorage.getItem(SB_URL_KEY);
             const key = localStorage.getItem(SB_ANON_KEY);
 
-            const badge = document.getElementById('connection-badge');
+            const statusDot = document.getElementById('status-dot');
+            const statusText = document.getElementById('status-text');
+            const sbHeaderControls = document.getElementById('supabase-controls-header');
             const unconfiguredBanner = document.getElementById('unconfigured-banner');
+            const settingsGearBtn = document.getElementById('settings-gear-btn');
+            const disconnectContainer = document.getElementById('disconnect-container');
 
-            if (!url || !key) {
-                badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20";
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> غير متصل`;
-                unconfiguredBanner.classList.remove('hidden');
-                unconfiguredBanner.classList.add('flex');
-                renderApp();
-                return;
+            if (url && key) {
+                try {
+                    supabaseClient = window.supabase.createClient(url, key);
+                    isConnectedToSupabase = true;
+
+                    // REQUIREMENT: Hide Supabase buttons & Banner AUTOMATICALLY upon connection
+                    sbHeaderControls.classList.add('hidden');
+                    unconfiguredBanner.classList.add('hidden');
+                    settingsGearBtn.classList.remove('hidden');
+                    disconnectContainer.classList.remove('hidden');
+
+                    statusDot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse';
+                    statusText.textContent = 'سوبا بيز متزامن ⚡';
+
+                    fetchSupabaseTasks();
+                    subscribeRealtime();
+                    return;
+                } catch (e) {
+                    console.error("Supabase Init Error:", e);
+                }
             }
 
-            try {
-                unconfiguredBanner.classList.add('hidden');
-                unconfiguredBanner.classList.remove('flex');
+            // Fallback: LocalStorage Mode
+            isConnectedToSupabase = false;
+            sbHeaderControls.classList.remove('hidden');
+            unconfiguredBanner.classList.remove('hidden');
+            settingsGearBtn.classList.add('hidden');
+            disconnectContainer.classList.add('hidden');
 
-                supabaseClient = window.supabase.createClient(url, key);
+            statusDot.className = 'w-2 h-2 rounded-full bg-amber-400';
+            statusText.textContent = 'تخزين محلي 📱';
 
-                badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> متصل متزامن`;
-
-                // Fetch initial tasks
-                fetchTasks();
-
-                // Subscribe to Realtime Postgres changes
-                subscribeRealtime();
-
-            } catch (err) {
-                console.error("Supabase Init Error:", err);
-                showToast("خطأ في الاتصال بـ Supabase", "error");
-            }
+            loadLocalTasks();
         }
 
-        async function fetchTasks() {
+        // --- LocalStorage Tasks Logic ---
+        function loadLocalTasks() {
+            const stored = localStorage.getItem(LOCAL_TASKS_KEY);
+            tasks = stored ? JSON.parse(stored) : getSampleTasks();
+            renderApp();
+        }
+
+        function saveLocalTasks() {
+            localStorage.setItem(LOCAL_TASKS_KEY, JSON.stringify(tasks));
+            renderApp();
+        }
+
+        function getSampleTasks() {
+            const today = new Date().toISOString().split('T')[0];
+            return [
+                {
+                    id: 'sample-1',
+                    title: 'روتين العناية الصباحية والبشرة 🌸',
+                    task_date: today,
+                    start_time: '08:00',
+                    end_time: '23:59',
+                    priority: 'medium',
+                    category: 'عناية',
+                    notes: 'استخدام السيروم والمرطب المرطب',
+                    completed: false,
+                    created_at: new Date().toISOString()
+                }
+            ];
+        }
+
+        async function fetchSupabaseTasks() {
             if (!supabaseClient) return;
 
             const { data, error } = await supabaseClient
@@ -542,8 +576,8 @@ alter publication supabase_realtime add table todos;</pre>
                 .order('created_at', { ascending: false });
 
             if (error) {
-                console.error("Error fetching tasks:", error);
-                showToast("فشل في تحميل المهام من قاعدة البيانات", "error");
+                console.error("Fetch tasks error:", error);
+                showToast("فشل التحميل من قاعدة البيانات", "error");
                 return;
             }
 
@@ -559,113 +593,104 @@ alter publication supabase_realtime add table todos;</pre>
             }
 
             realtimeChannel = supabaseClient
-                .channel('todos-changes')
+                .channel('todos-girly-changes')
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'todos' }, payload => {
-                    handleRealtimePayload(payload);
-                })
-                .subscribe((status) => {
-                    if (status === 'SUBSCRIBED') {
-                        console.log('Realtime connected!');
+                    const { eventType, new: newRow, old: oldRow } = payload;
+                    if (eventType === 'INSERT') {
+                        if (!tasks.some(t => t.id === newRow.id)) {
+                            tasks.unshift(newRow);
+                            showToast('تمت إضافة مهمة جديدة مباشرة 🌸');
+                        }
+                    } else if (eventType === 'UPDATE') {
+                        tasks = tasks.map(t => t.id === newRow.id ? newRow : t);
+                    } else if (eventType === 'DELETE') {
+                        tasks = tasks.filter(t => t.id !== oldRow.id);
                     }
-                });
-        }
-
-        function handleRealtimePayload(payload) {
-            const { eventType, new: newRow, old: oldRow } = payload;
-
-            if (eventType === 'INSERT') {
-                // Avoid duplicating if local state already has it
-                if (!tasks.some(t => t.id === newRow.id)) {
-                    tasks.unshift(newRow);
-                    showToast('تمت إضافة مهمة جديدة تفاعلياً ⚡');
-                }
-            } else if (eventType === 'UPDATE') {
-                tasks = tasks.map(t => t.id === newRow.id ? newRow : t);
-            } else if (eventType === 'DELETE') {
-                tasks = tasks.filter(t => t.id !== oldRow.id);
-            }
-
-            renderApp();
+                    renderApp();
+                })
+                .subscribe();
         }
 
         async function handleTaskSubmit(e) {
             e.preventDefault();
 
-            if (!supabaseClient) {
-                openConfigModal();
-                return;
-            }
-
             const id = document.getElementById('task-id').value;
             const title = document.getElementById('input-title').value.trim();
-            const datetime = document.getElementById('input-datetime').value;
+            const dateVal = document.getElementById('input-date').value || null;
+            const startTime = document.getElementById('input-starttime').value;
+            const endTime = document.getElementById('input-endtime').value;
             const priority = document.getElementById('input-priority').value;
             const category = document.getElementById('input-category').value;
             const notes = document.getElementById('input-notes').value.trim();
 
-            if (!title || !datetime) return;
+            if (!title || !startTime || !endTime) return;
 
             const taskData = {
                 title,
-                due_date: new Date(datetime).toISOString(),
+                task_date: dateVal,
+                start_time: startTime,
+                end_time: endTime,
                 priority,
                 category,
-                notes,
+                notes
             };
 
-            if (id) {
-                // Update
-                const { error } = await supabaseClient
-                    .from('todos')
-                    .update(taskData)
-                    .eq('id', id);
-
-                if (error) {
-                    showToast("فشل تعديل المهمة", "error");
-                    console.error(error);
+            if (isConnectedToSupabase) {
+                if (id) {
+                    const { error } = await supabaseClient.from('todos').update(taskData).eq('id', id);
+                    if (error) {
+                        showToast("خطأ في التعديل", "error");
+                    } else {
+                        showToast("تم تعديل المهمة ✨");
+                    }
                 } else {
-                    showToast("تم تعديل المهمة بنجاح!");
+                    taskData.completed = false;
+                    const { error } = await supabaseClient.from('todos').insert([taskData]);
+                    if (error) {
+                        showToast("خطأ أثناء الإضافة", "error");
+                        console.error(error);
+                    } else {
+                        showToast("تمت الإضافة بنجاح 💕");
+                    }
                 }
             } else {
-                // Insert
-                taskData.completed = false;
-                const { error } = await supabaseClient
-                    .from('todos')
-                    .insert([taskData]);
-
-                if (error) {
-                    showToast("فشل إضافة المهمة. تأكد من إعداد جدول SQL", "error");
-                    console.error(error);
+                // LocalStorage Handling
+                if (id) {
+                    tasks = tasks.map(t => t.id === id ? { ...t, ...taskData } : t);
+                    showToast("تم التعديل محلياً ✨");
                 } else {
-                    showToast("تمت إضافة المهمة بنجاح!");
+                    const newTask = {
+                        id: 'loc-' + Date.now(),
+                        ...taskData,
+                        completed: false,
+                        created_at: new Date().toISOString()
+                    };
+                    tasks.unshift(newTask);
+                    showToast("تمت الإضافة محلياً 💕");
                 }
+                saveLocalTasks();
             }
 
             closeTaskModal();
         }
 
         async function toggleTaskComplete(id) {
-            if (!supabaseClient) return;
-
             const task = tasks.find(t => t.id === id);
             if (!task) return;
 
             const newCompleted = !task.completed;
 
-            // Optimistic update
+            // Optimistic Update
             tasks = tasks.map(t => t.id === id ? { ...t, completed: newCompleted } : t);
             renderApp();
 
-            if (newCompleted) playSuccessSound();
+            if (newCompleted) playGirlyChime();
 
-            const { error } = await supabaseClient
-                .from('todos')
-                .update({ completed: newCompleted })
-                .eq('id', id);
-
-            if (error) {
-                console.error("Toggle error:", error);
-                fetchTasks(); // rollback
+            if (isConnectedToSupabase) {
+                const { error } = await supabaseClient.from('todos').update({ completed: newCompleted }).eq('id', id);
+                if (error) fetchSupabaseTasks();
+            } else {
+                saveLocalTasks();
             }
         }
 
@@ -676,159 +701,79 @@ alter publication supabase_realtime add table todos;</pre>
         }
 
         async function confirmDeleteTask() {
-            if (!taskToDeleteId || !supabaseClient) return;
-
+            if (!taskToDeleteId) return;
             const id = taskToDeleteId;
             closeDeleteModal();
 
-            // Optimistic deletion
             tasks = tasks.filter(t => t.id !== id);
             renderApp();
 
-            const { error } = await supabaseClient
-                .from('todos')
-                .delete()
-                .eq('id', id);
-
-            if (error) {
-                showToast("حدث خطأ أثناء الحذف", "error");
-                fetchTasks();
+            if (isConnectedToSupabase) {
+                const { error } = await supabaseClient.from('todos').delete().eq('id', id);
+                if (error) {
+                    showToast("خطأ في الحذف", "error");
+                    fetchSupabaseTasks();
+                } else {
+                    showToast("تم الحذف بنجاح");
+                }
             } else {
-                showToast("تم حذف المهمة");
+                saveLocalTasks();
+                showToast("تم الحذف");
             }
         }
 
-        function openConfigModal() {
-            document.getElementById('sb-url-input').value = localStorage.getItem(SB_URL_KEY) || '';
-            document.getElementById('sb-key-input').value = localStorage.getItem(SB_ANON_KEY) || '';
-            document.getElementById('config-modal').classList.remove('hidden');
-        }
-
-        function closeConfigModal() {
-            document.getElementById('config-modal').classList.add('hidden');
-        }
-
-        function saveSupabaseConfig(e) {
-            e.preventDefault();
-            const url = document.getElementById('sb-url-input').value.trim();
-            const key = document.getElementById('sb-key-input').value.trim();
-
-            localStorage.setItem(SB_URL_KEY, url);
-            localStorage.setItem(SB_ANON_KEY, key);
-
-            closeConfigModal();
-            showToast("تم حفظ الإعدادات والاتصال!");
-            initSupabase();
-        }
-
-        function openSqlModal() {
-            document.getElementById('sql-modal').classList.remove('hidden');
-        }
-
-        function closeSqlModal() {
-            document.getElementById('sql-modal').classList.add('hidden');
-        }
-
-        function copySqlCode() {
-            const sqlText = document.getElementById('sql-code').innerText;
-            const textarea = document.createElement('textarea');
-            textarea.value = sqlText;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-
-            showToast("تم نسخ استعلام SQL إلى الحافظة! 📋");
-        }
-
-        function getTimeStatus(due_date, isCompleted) {
-            if (isCompleted) {
-                return {
-                    label: 'مكتملة',
-                    badgeBg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-                    dotBg: 'bg-emerald-500',
-                    state: 'completed'
-                };
+        function computeTaskStatus(task) {
+            if (task.completed) {
+                return { key: 'completed', label: 'مكتملة ✨', bg: 'bg-emerald-100 text-emerald-800 border-emerald-300' };
             }
-
-            if (!due_date) return { label: 'بدون تاريخ', badgeBg: 'bg-slate-800 text-slate-400 border-slate-700', dotBg: 'bg-slate-500' };
 
             const now = new Date();
-            const taskDate = new Date(due_date);
-            const isToday = now.toDateString() === taskDate.toDateString();
+            let dateStr = task.task_date;
 
-            if (taskDate < now) {
-                return {
-                    label: 'متأخرة',
-                    badgeBg: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-                    dotBg: 'bg-rose-500 animate-ping',
-                    state: 'overdue'
-                };
-            } else if (isToday) {
-                return {
-                    label: 'اليوم',
-                    badgeBg: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-                    dotBg: 'bg-amber-500',
-                    state: 'today'
-                };
+            // If date is optional/not set, assume current date for time evaluation
+            if (!dateStr) {
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                dateStr = `${year}-${month}-${day}`;
+            }
+
+            const startDT = new Date(`${dateStr}T${task.start_time}`);
+            const endDT = new Date(`${dateStr}T${task.end_time}`);
+
+            if (now >= startDT && now <= endDT) {
+                return { key: 'running', label: 'جاري الآن 🌸', bg: 'bg-pink-100 text-pink-700 border-pink-300 pulse-active font-extrabold' };
+            } else if (now < startDT) {
+                return { key: 'upcoming', label: 'قادمة ⏰', bg: 'bg-purple-100 text-purple-700 border-purple-300' };
             } else {
-                return {
-                    label: 'قادمة',
-                    badgeBg: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-                    dotBg: 'bg-blue-500',
-                    state: 'upcoming'
-                };
+                return { key: 'expired', label: 'انتهت ⌛', bg: 'bg-rose-100 text-rose-700 border-rose-300' };
             }
         }
 
-        function formatArabicDateTime(datetimeStr) {
-            if (!datetimeStr) return 'غير حدد';
-            const d = new Date(datetimeStr);
-            const optionsDate = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-            const optionsTime = { hour: '2-digit', minute: '2-digit', hour12: true };
-            return `${d.toLocaleDateString('ar-EG', optionsDate)} | ${d.toLocaleTimeString('ar-EG', optionsTime)}`;
+        function formatTime12H(timeStr) {
+            if (!timeStr) return '';
+            const [hours, minutes] = timeStr.split(':');
+            let h = parseInt(hours, 10);
+            const ampm = h >= 12 ? 'م' : 'ص';
+            h = h % 12 || 12;
+            return `${h}:${minutes} ${ampm}`;
         }
 
-        function getRelativeTimeString(datetimeStr, isCompleted) {
-            if (isCompleted || !datetimeStr) return '';
-
-            const now = new Date();
-            const taskDate = new Date(datetimeStr);
-            const diffMs = taskDate - now;
-            const diffMin = Math.round(diffMs / (1000 * 60));
-            const diffHours = Math.round(diffMs / (1000 * 60 * 60));
-            const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
-
-            if (diffMs < 0) {
-                const absMin = Math.abs(diffMin);
-                if (absMin < 60) return `متأخرة بـ ${absMin} دقيقة`;
-                const absHours = Math.abs(diffHours);
-                if (absHours < 24) return `متأخرة بـ ${absHours} ساعة`;
-                return `متأخرة بـ ${Math.abs(diffDays)} يوم`;
-            } else {
-                if (diffMin < 60) return `بقي ${diffMin} دقيقة`;
-                if (diffHours < 24) return `بقي ${diffHours} ساعة`;
-                return `بقي ${diffDays} يوم`;
-            }
+        function formatDateArabic(dateStr) {
+            if (!dateStr) return 'يومياً 📅';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('ar-EG', { month: 'short', day: 'numeric', weekday: 'short' });
         }
 
         function getFilteredTasks() {
-            const now = new Date();
-
             return tasks.filter(task => {
-                if (activeTab === 'today') {
-                    if (!task.due_date) return false;
-                    const isToday = now.toDateString() === new Date(task.due_date).toDateString();
-                    if (!isToday) return false;
-                } else if (activeTab === 'pending') {
-                    if (task.completed) return false;
-                } else if (activeTab === 'completed') {
-                    if (!task.completed) return false;
-                }
+                const status = computeTaskStatus(task);
 
-                if (categoryFilter !== 'all' && task.category !== categoryFilter) {
-                    return false;
-                }
+                if (activeTab === 'running' && status.key !== 'running') return false;
+                if (activeTab === 'upcoming' && status.key !== 'upcoming') return false;
+                if (activeTab === 'completed' && !task.completed) return false;
+
+                if (categoryFilter !== 'all' && task.category !== categoryFilter) return false;
 
                 if (searchQuery) {
                     const q = searchQuery.toLowerCase();
@@ -842,24 +787,25 @@ alter publication supabase_realtime add table todos;</pre>
         }
 
         function updateStats() {
-            const now = new Date();
-            const total = tasks.length;
-            const completed = tasks.filter(t => t.completed).length;
-            const pending = tasks.filter(t => !t.completed).length;
-            const overdue = tasks.filter(t => !t.completed && t.due_date && new Date(t.due_date) < now).length;
+            let running = 0;
+            let upcoming = 0;
+            let completed = 0;
 
-            const countToday = tasks.filter(t => {
-                return t.due_date && now.toDateString() === new Date(t.due_date).toDateString();
-            }).length;
+            tasks.forEach(t => {
+                const st = computeTaskStatus(t);
+                if (t.completed) completed++;
+                else if (st.key === 'running') running++;
+                else if (st.key === 'upcoming') upcoming++;
+            });
 
-            document.getElementById('stat-total').textContent = total;
-            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-total').textContent = tasks.length;
+            document.getElementById('stat-running').textContent = running;
+            document.getElementById('stat-upcoming').textContent = upcoming;
             document.getElementById('stat-completed').textContent = completed;
-            document.getElementById('stat-overdue').textContent = overdue;
 
-            document.getElementById('count-all').textContent = total;
-            document.getElementById('count-today').textContent = countToday;
-            document.getElementById('count-pending').textContent = pending;
+            document.getElementById('count-all').textContent = tasks.length;
+            document.getElementById('count-running').textContent = running;
+            document.getElementById('count-upcoming').textContent = upcoming;
             document.getElementById('count-completed').textContent = completed;
         }
 
@@ -883,62 +829,54 @@ alter publication supabase_realtime add table todos;</pre>
             container.innerHTML = filtered.map(task => {
                 const cat = CATEGORIES[task.category] || CATEGORIES['عام'];
                 const prio = PRIORITIES[task.priority] || PRIORITIES.medium;
-                const timeStatus = getTimeStatus(task.due_date, task.completed);
-                const formattedTime = formatArabicDateTime(task.due_date);
-                const relativeTime = getRelativeTimeString(task.due_date, task.completed);
+                const status = computeTaskStatus(task);
 
                 return `
-                    <div class="glass-card rounded-2xl p-5 flex flex-col justify-between relative group border ${task.completed ? 'opacity-70 border-slate-800' : 'border-slate-800/80'}">
+                    <div class="glass-card rounded-2xl p-4 flex flex-col justify-between border ${task.completed ? 'opacity-70 border-slate-200' : 'border-rose-200/80'}">
                         
-                        <div>
-                            <!-- Header Badges -->
-                            <div class="flex items-center justify-between gap-2 mb-3">
-                                <div class="flex items-center gap-1.5 flex-wrap">
-                                    <span class="inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border font-semibold ${timeStatus.badgeBg}">
-                                        <span class="w-1.5 h-1.5 rounded-full ${timeStatus.dotBg}"></span>
-                                        ${timeStatus.label}
-                                    </span>
-
-                                    <span class="text-xs px-2.5 py-1 rounded-full border font-medium ${prio.color}">
-                                        ${prio.name}
-                                    </span>
-                                </div>
-
-                                <span class="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-xl border ${cat.color}">
-                                    <i class="fa-solid ${cat.icon} text-[10px]"></i>
-                                    ${task.category || 'عام'}
+                        <!-- Top Header Row -->
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="text-[11px] px-2.5 py-0.5 rounded-full border font-bold ${status.bg}">
+                                    ${status.label}
+                                </span>
+                                <span class="text-[10px] px-2 py-0.5 rounded-full border font-bold ${prio.color}">
+                                    ${prio.name}
                                 </span>
                             </div>
 
-                            <!-- Task Content -->
-                            <div class="flex items-start gap-3 my-2">
-                                <button onclick="toggleTaskComplete('${task.id}')" aria-label="إكمال المهمة" class="mt-0.5 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${task.completed ? 'bg-emerald-500 border-emerald-500 text-white shadow-md shadow-emerald-500/20' : 'border-slate-600 hover:border-emerald-500 text-transparent'}">
-                                    <i class="fa-solid fa-check text-xs"></i>
-                                </button>
-                                <div class="flex-1">
-                                    <h3 class="text-sm sm:text-base font-bold text-slate-100 leading-snug transition-all ${task.completed ? 'task-completed-title' : ''}">
-                                        ${escapeHtml(task.title || '')}
-                                    </h3>
-                                    ${task.notes ? `<p class="text-xs text-slate-400 mt-1.5 line-clamp-2 leading-relaxed">${escapeHtml(task.notes)}</p>` : ''}
-                                </div>
+                            <span class="text-[11px] px-2 py-0.5 rounded-xl border font-bold ${cat.color} flex items-center gap-1">
+                                <span>${cat.icon}</span>
+                                <span>${task.category || 'عام'}</span>
+                            </span>
+                        </div>
+
+                        <!-- Content Title & Checkbox -->
+                        <div class="flex items-start gap-3 my-1">
+                            <button onclick="toggleTaskComplete('${task.id}')" aria-label="إنجاز المهمة" class="mt-0.5 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all shrink-0 ${task.completed ? 'bg-pink-500 border-pink-500 text-white shadow-sm' : 'border-rose-300 hover:border-pink-500 text-transparent bg-white'}">
+                                <i class="fa-solid fa-check text-xs"></i>
+                            </button>
+                            <div class="flex-1">
+                                <h3 class="text-xs sm:text-sm font-extrabold text-slate-800 leading-snug ${task.completed ? 'completed-strike' : ''}">
+                                    ${escapeHtml(task.title)}
+                                </h3>
+                                ${task.notes ? `<p class="text-[11px] text-slate-500 mt-1 line-clamp-2">${escapeHtml(task.notes)}</p>` : ''}
                             </div>
                         </div>
 
-                        <!-- Footer Controls -->
-                        <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2 text-xs">
-                            <div class="text-slate-400 flex flex-col gap-0.5">
-                                <div class="flex items-center gap-1.5 text-slate-300">
-                                    <i class="fa-regular fa-clock text-emerald-400 text-xs"></i>
-                                    <span class="font-medium">${formattedTime}</span>
-                                </div>
-                                ${relativeTime ? `<span class="text-[11px] text-slate-500">${relativeTime}</span>` : ''}
+                        <!-- Bottom Footer Time Details -->
+                        <div class="mt-3 pt-2 border-t border-rose-100/80 flex items-center justify-between text-[11px]">
+                            <div class="flex items-center gap-2 text-rose-900 font-bold">
+                                <span>📅 ${formatDateArabic(task.task_date)}</span>
+                                <span>•</span>
+                                <span>⏰ ${formatTime12H(task.start_time)} - ${formatTime12H(task.end_time)}</span>
                             </div>
 
                             <div class="flex items-center gap-1">
-                                <button onclick="openTaskModal('${task.id}')" title="تعديل المهمة" class="w-8 h-8 rounded-lg text-slate-400 hover:text-amber-400 hover:bg-slate-800 flex items-center justify-center transition-colors">
+                                <button onclick="openTaskModal('${task.id}')" title="تعديل" class="w-7 h-7 rounded-lg text-slate-400 hover:text-pink-600 hover:bg-pink-50 flex items-center justify-center">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
-                                <button onclick="promptDeleteTask('${task.id}')" title="حذف المهمة" class="w-8 h-8 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 flex items-center justify-center transition-colors">
+                                <button onclick="promptDeleteTask('${task.id}')" title="حذف" class="w-7 h-7 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
@@ -952,7 +890,6 @@ alter publication supabase_realtime add table todos;</pre>
         function openTaskModal(taskId = null) {
             const modal = document.getElementById('task-modal');
             const modalTitle = document.getElementById('modal-title');
-            const modalIcon = document.getElementById('modal-icon');
             const submitBtn = document.getElementById('modal-submit-btn');
 
             if (taskId) {
@@ -961,26 +898,22 @@ alter publication supabase_realtime add table todos;</pre>
 
                 document.getElementById('task-id').value = task.id;
                 document.getElementById('input-title').value = task.title;
-                if (task.due_date) {
-                    const localDate = new Date(task.due_date);
-                    localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset());
-                    document.getElementById('input-datetime').value = localDate.toISOString().slice(0, 16);
-                }
+                document.getElementById('input-date').value = task.task_date || '';
+                document.getElementById('input-starttime').value = task.start_time || '09:00';
+                document.getElementById('input-endtime').value = task.end_time || '10:00';
                 document.getElementById('input-priority').value = task.priority || 'medium';
-                document.getElementById('input-category').value = task.category || 'عام';
+                document.getElementById('input-category').value = task.category || 'شخصي';
                 document.getElementById('input-notes').value = task.notes || '';
 
-                modalTitle.textContent = 'تعديل المهمة';
-                modalIcon.className = 'fa-solid fa-pen-to-square';
-                submitBtn.textContent = 'حفظ التغييرات';
+                modalTitle.textContent = 'تعديل المهمة ✨';
+                submitBtn.textContent = 'حفظ التغيرات';
             } else {
                 document.getElementById('task-form').reset();
                 document.getElementById('task-id').value = '';
-                setDefaultDateTime();
+                setDefaultTimes();
 
-                modalTitle.textContent = 'إضافة مهمة جديدة';
-                modalIcon.className = 'fa-solid fa-plus';
-                submitBtn.textContent = 'إضافة المهمة';
+                modalTitle.textContent = 'إضافة مهمة جديدة 🌸';
+                submitBtn.textContent = 'حفظ المهمة ✨';
             }
 
             modal.classList.remove('hidden');
@@ -990,78 +923,87 @@ alter publication supabase_realtime add table todos;</pre>
             document.getElementById('task-modal').classList.add('hidden');
         }
 
+        function clearDateInput() {
+            document.getElementById('input-date').value = '';
+        }
+
+        function setDefaultTimes() {
+            const now = new Date();
+            const startH = String(now.getHours()).padStart(2, '0');
+            const startM = String(now.getMinutes()).padStart(2, '0');
+
+            const endH = String((now.getHours() + 1) % 24).padStart(2, '0');
+
+            document.getElementById('input-starttime').value = `${startH}:${startM}`;
+            document.getElementById('input-endtime').value = `${endH}:${startM}`;
+        }
+
+        function openConfigModal() {
+            document.getElementById('sb-url-input').value = localStorage.getItem(SB_URL_KEY) || '';
+            document.getElementById('sb-key-input').value = localStorage.getItem(SB_ANON_KEY) || '';
+            document.getElementById('config-modal').classList.remove('hidden');
+        }
+
+        function closeConfigModal() {
+            document.getElementById('config-modal').classList.add('hidden');
+        }
+
+        function saveSupabaseConfig(e) {
+            e.preventDefault();
+            const url = document.getElementById('sb-url-input').value.trim();
+            const key = document.getElementById('sb-key-input').value.trim();
+
+            localStorage.setItem(SB_URL_KEY, url);
+            localStorage.setItem(SB_ANON_KEY, key);
+
+            closeConfigModal();
+            showToast("تم حفظ الإعدادات بنجاح 💕");
+            initApp();
+        }
+
+        function disconnectSupabase() {
+            localStorage.removeItem(SB_URL_KEY);
+            localStorage.removeItem(SB_ANON_KEY);
+            supabaseClient = null;
+            closeConfigModal();
+            showToast("تم الفصل والعودة للتخزين المحلي 📱");
+            initApp();
+        }
+
+        function openSqlModal() {
+            document.getElementById('sql-modal').classList.remove('hidden');
+        }
+
+        function closeSqlModal() {
+            document.getElementById('sql-modal').classList.add('hidden');
+        }
+
+        function copySqlCode() {
+            const code = document.getElementById('sql-code').innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = code;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            showToast("تم نسخ SQL إلى الحافظة! 📋");
+        }
+
         function closeDeleteModal() {
             taskToDeleteId = null;
             document.getElementById('delete-modal').classList.add('hidden');
         }
 
-        function setDefaultDateTime() {
-            const now = new Date();
-            now.setHours(now.getHours() + 1);
-            now.setMinutes(0);
-            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-            document.getElementById('input-datetime').value = now.toISOString().slice(0, 16);
-        }
-
-        function escapeHtml(str) {
-            return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        }
-
-        function playSuccessSound() {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const ctx = new AudioContext();
-                const now = ctx.currentTime;
-                
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(523.25, now); // C5
-                osc.frequency.exponentialRampToValueAtTime(1046.50, now + 0.15); // C6
-
-                gain.gain.setValueAtTime(0.1, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc.start(now);
-                osc.stop(now + 0.3);
-            } catch (e) {}
-        }
-
-        function showToast(message, type = "success") {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toast-message');
-            const toastIcon = document.getElementById('toast-icon');
-
-            toastMsg.textContent = message;
-            if (type === "error") {
-                toastIcon.className = "fa-solid fa-circle-exclamation text-rose-400 text-lg";
-            } else {
-                toastIcon.className = "fa-solid fa-circle-check text-emerald-400 text-lg";
-            }
-
-            toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
-            toast.classList.add('opacity-100', 'translate-y-0');
-
-            setTimeout(() => {
-                toast.classList.remove('opacity-100', 'translate-y-0');
-                toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
-            }, 3000);
-        }
-
         function setTab(tab) {
             activeTab = tab;
             document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.className = 'tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 whitespace-nowrap';
+                btn.className = 'tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-slate-600 hover:bg-rose-100/50 whitespace-nowrap';
             });
 
             const activeBtn = document.getElementById(`tab-${tab}`);
             if (activeBtn) {
-                activeBtn.className = 'tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all bg-emerald-600 text-white shadow-md shadow-emerald-600/20 whitespace-nowrap';
+                activeBtn.className = 'tab-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-rose-500 text-white shadow-sm shadow-rose-300 whitespace-nowrap';
             }
 
             renderApp();
@@ -1075,6 +1017,52 @@ alter publication supabase_realtime add table todos;</pre>
         function handleCategoryFilter() {
             categoryFilter = document.getElementById('category-filter').value;
             renderApp();
+        }
+
+        function escapeHtml(str) {
+            return String(str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        function playGirlyChime() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const now = ctx.currentTime;
+
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(659.25, now); // E5
+                osc.frequency.exponentialRampToValueAtTime(1318.51, now + 0.2); // E6
+
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.35);
+            } catch (e) {}
+        }
+
+        function showToast(message, type = "success") {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.textContent = message;
+            toastIcon.textContent = type === "error" ? "❌" : "✨";
+
+            toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+            }, 2500);
         }
     </script>
 </body>
